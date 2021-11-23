@@ -1,0 +1,25 @@
+b *0x08061fc6
+b *0x0806223d
+b *0x8061f90
+b *0x8062037
+b *0x08062178
+
+# first shot
+set *(int*)($ebp-0x28)=0x2d
+
+# second shot
+set *(int*)($ebp-0x58)=0x1f
+
+# third shot
+set *(int*)($ebp-0x24)=0x4c
+
+# fourth shot
+set *(int*)($ebp-0xe8)=0x2c
+
+# fifth shot
+set *(int*)($ebp-0xe4)=0x4b
+
+[4, 5, 6, 7, 8, 9]
+['J', 'K', 'L', 'q', '5', '9', 'U', '1', '3', '3', '7']
+
+456789JKLq59U1337
