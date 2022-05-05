@@ -1,0 +1,37 @@
+
+*** stack smashing detected ***: terminated
+
+_mcleanup: gmon.out: Read-only file system
+
+*** stack smashing detected ***: terminated
+
+munmap_chunk(): invalid pointer
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+Inconsistency detected by ld.so: ../elf/dl-tls.c: 697: _dl_update_slotinfo: Assertion `total + cnt == modid' failed!
+
+óú1íI‰Ñ^H‰âHƒäğPTLv
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+*** stack smashing detected ***: terminated
+
+óú1íI‰Ñ^H‰âHƒäğPTLv
+munmap_chunk(): invalid pointer
+
+actf{h0llerin'_at_y0u_from_a_1977_mont3_car1o_a6ececa9966d}
+
+Inconsistency detected by ld.so: ../elf/dl-tls.c: 697: _dl_update_slotinfo: Assertion `total + cnt == modid' failed!
+

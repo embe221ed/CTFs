@@ -67,15 +67,25 @@ typedef struct
 } request_t;
 
 static long tracker_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+// 0xffffffffc00007a4
 static long tracker_get_game(char* name);
+// 0xffffffffc00008bb
 static long tracker_set_notes(uint32_t serial, char* notes);
+// 0xffffffffc0000960
 static long tracker_release_game(uint32_t serial);
+// 0xffffffffc0000a32
 static long tracker_execute_game(uint32_t serial, long gamenum, long args);
+// 0xffffffffc0000bf8
 static long tracker_mark(uint32_t serial, uint64_t contestant, uint32_t status);
+// 0xffffffffc0000d30
 static long tracker_status(uint32_t serial, int64_t contestant);
+// 0xffffffffc0000dfe
 static game_t* tracker_alloc_game(char* name);
+// 0xffffffffc0000f08
 static long tracker_create_serial(game_t* game);
+// 0xffffffffc0000fb7
 static serial_t* tracker_search_serial(uint32_t serial);
+// 0xffffffffc0001026
 static unsigned long dummy(unsigned long args);
 
 static DEFINE_MUTEX(game_lock);
@@ -88,6 +98,16 @@ static long tracker_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 {
     request_t r;
 
+    /*
+     * ffffffff81039f30 t is_copy_from_user
+     * ffffffff8117ae50 T copy_from_user_nofault
+     * ffffffff813f30f0 t kfifo_copy_from_user
+     * ffffffff813f5460 T _copy_from_user
+     * ffffffff81439090 T csum_and_copy_from_user
+     * ffffffff8143b460 T copy_from_user_nmi
+     * ffffffff81860fe0 T copy_from_user_toio
+     * ffffffff81914660 t ethtool_rxnfc_copy_from_user
+     */
     if (copy_from_user((void *) &r, (void *) arg, sizeof(request_t)))
     {   
         return -1; 
@@ -125,6 +145,7 @@ static long tracker_ioctl(struct file *file, unsigned int cmd, unsigned long arg
     return -1;
 }; 
 
+// only place where something different than 0, 1 and -1 is returned
 static long tracker_get_game(char* name)
 {
     game_t* g;
@@ -134,9 +155,18 @@ static long tracker_get_game(char* name)
 
     list_for_each_entry(g, &games, glist)
     {
+        /*
+         * ffffffff81430130 T strcmp
+         */
         if (!strcmp(g->name, name))
         {
+            // new serial is being created
             ret = tracker_create_serial(g);
+            // there are no checks regarding too big value
+            /*
+             * ffffffffc0000394 t __refcount_inc	[contestanttrack]
+             * ffffffffc00003bd t refcount_inc	[contestanttrack]
+             */
             refcount_inc(&(g->count));
 
             mutex_unlock(&game_lock);
@@ -145,6 +175,10 @@ static long tracker_get_game(char* name)
     }
 
     g = tracker_alloc_game(name);
+    /*
+     * ffffffffc000005d t __list_add	[contestanttrack]
+     * ffffffffc00000cb t list_add	[contestanttrack]
+     */
     list_add(&g->glist, &games);
     ret = tracker_create_serial(g);
 
@@ -165,6 +199,11 @@ static long tracker_set_notes(uint32_t serial, char* notes) {
         return ret;
     }
     state = s->game->state;
+    /*
+     * ffffffff81b910b0 W memcpy
+     */
+    // this is probably good place for arbitrary write, I would have to make
+    // sure the state->notes address is pointing to the place I want to write
     memcpy(state->notes, notes, sizeof(state->notes));
     state->notes[sizeof(state->notes)-1] = 0;
     ret = 0;
@@ -187,13 +226,27 @@ static long tracker_release_game(uint32_t serial)
         return ret;
     }
 
+    // not sure if serial can't be found even if it's deleted
+    /*
+     * ffffffffc0000162 t list_del	[contestanttrack]
+     */
     list_del(&s->slist);
+    /*
+     * ffffffff811e3240 T kfree
+     */
     kfree(s);
 
     g = s->game;
+    // this condition is true if refcount == 0
     if (refcount_dec_and_test(&g->count))
     {
+        /*
+         * ffffffffc0000162 t list_del	[contestanttrack]
+         */
         list_del(&g->glist);
+        /*
+         * ffffffff811e3240 T kfree
+         */
         kfree(g->state);
         kfree(g);
     }
@@ -263,6 +316,8 @@ static long tracker_mark(uint32_t serial, uint64_t contestant, uint32_t status)
     }
     state = s->game->state;
 
+    // here is probably wrong as contestants[num_contestants] if OOB
+    // probably negative index will work
     num_contestants = sizeof(state->contestants)<<3;
     if (contestant <= num_contestants)
     {
@@ -312,7 +367,7 @@ static game_t* tracker_alloc_game(char* name)
 
     game = (game_t *) kmalloc(sizeof(game_t), GFP_KERNEL);
     strlcpy(game->name, name, sizeof(game->name));
-    strlcpy(game->desc, "Hundreds of flag-strapped players accept a strange invitiation to compete in kernel pwnables.", sizeof(game->desc));
+    strlcpy(game->desc, "Hundreds of flag-strapped players accept.", sizeof(game->desc));
     refcount_set(&(game->count), 1);
 
     state = (state_t *) kmalloc(sizeof(state_t), GFP_KERNEL);
@@ -362,6 +417,9 @@ static serial_t* tracker_search_serial(uint32_t serial)
     return NULL;
 }
 
+/*
+ * ffffffffc0001026 t dummy	[contestanttrack]
+ */
 static unsigned long dummy(unsigned long args)
 {
 	return args+1;
@@ -380,12 +438,15 @@ static int __init tracker_init(void)
     // TODO: Add real games...
     dummy_gops = (gameops_t *) kmalloc(sizeof(gameops_t), GFP_KERNEL);
     dummy_gops->execute_game1 = dummy;
+    /*
+     * ffffffff810dc690 T clock_t_to_jiffies
+     */
     dummy_gops->execute_game2 = clock_t_to_jiffies;
     dummy_gops->execute_game3 = dummy;
     dummy_gops->execute_game4 = dummy;
     dummy_gops->execute_game5 = dummy;
     dummy_gops->execute_game6 = dummy;
-  	dummy_gops->fallthrough_game = dummy,
+  	dummy_gops->fallthrough_game = dummy;
 
     proc_entry = proc_create("tracker", 0666, NULL, &fops);
     printk(KERN_INFO "Loaded Contestant Tracking Module...\n");
