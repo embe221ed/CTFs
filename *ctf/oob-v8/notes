@@ -1,0 +1,40 @@
+// vim: syntax=javascript
+// o:
+0x17352d30f5c1 <Object map = 0x2c413a180459>
+/*################################*/
+0x17352d30f5c1: [JS_OBJECT_TYPE]
+ - map: 0x2c413a180459 <Map(HOLEY_ELEMENTS)> [FastProperties]
+ - prototype: 0x30f9eb342091 <Object map = 0x2c413a180229>
+ - elements: 0x3177180c0c71 <FixedArray[0]> [HOLEY_ELEMENTS]
+ - properties: 0x3177180c0c71 <FixedArray[0]> {}
+/*################################*/
+# objArr:
+0x17352d30f671 <JSArray[1]>
+/*################################*/
+0x17352d30f671: [JSArray]
+ - map: 0x2c413a182f79 <Map(PACKED_ELEMENTS)> [FastProperties]
+ - prototype: 0x30f9eb351111 <JSArray[0]>
+ - elements: 0x17352d30f6a1 <FixedArray[1]> [PACKED_ELEMENTS]
+ - length: 1
+ - properties: 0x3177180c0c71 <FixedArray[0]> {
+    #length: 0x346e6db001a9 <AccessorInfo> (const accessor descriptor)
+ }
+ - elements: 0x17352d30f6a1 <FixedArray[1]> {
+           0: 0x17352d30f5c1 <Object map = 0x2c413a180459>
+ }
+/*################################*/
+# fltArr:
+0x17352d30f6d1 <JSArray[1]>
+/*################################*/
+0x17352d30f6d1: [JSArray]
+ - map: 0x2c413a182ed9 <Map(PACKED_DOUBLE_ELEMENTS)> [FastProperties]
+ - prototype: 0x30f9eb351111 <JSArray[0]>
+ - elements: 0x17352d30f701 <FixedDoubleArray[1]> [PACKED_DOUBLE_ELEMENTS]
+ - length: 1
+ - properties: 0x3177180c0c71 <FixedArray[0]> {
+    #length: 0x346e6db001a9 <AccessorInfo> (const accessor descriptor)
+ }
+ - elements: 0x17352d30f701 <FixedDoubleArray[1]> {
+           0: 1.1
+ }
+/*################################*/
