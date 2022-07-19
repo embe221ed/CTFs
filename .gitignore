@@ -4,3 +4,10 @@
 # ghidra
 *.gpr
 *.rep
+
+# my own todo marker
+TODO
+
+# browser-specific directories
+\*ctf/oob-v8/Chrome/
+BlazeCTF/blazefox/firefox/
