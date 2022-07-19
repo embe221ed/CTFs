@@ -4,3 +4,6 @@ BlazeCTF/blazefox/blaze_firefox_dist_large.tar.gz filter=lfs diff=lfs merge=lfs 
 CSAW-CTF/pwn/ES1337/dist.zip filter=lfs diff=lfs merge=lfs -text
 DragonCTF/pwn/noflippidy/files.tar.gz filter=lfs diff=lfs merge=lfs -text
 GoogleCTF/2022/pwn/d8/2f1cafb6397788f2ebd73ec3d489870253ab77154f4e36e4bddc0c6cab2541038b7ad8ce560b09bb8d8b4efc52458614254d3b810b899e63c4161432dfba2d65 filter=lfs diff=lfs merge=lfs -text
+HXPCTF/pwn/zehn/zehn-bfd5ac789384cc69.tar.xz filter=lfs diff=lfs merge=lfs -text
+picoCTF/2021/download_horsepower/d8 filter=lfs diff=lfs merge=lfs -text
+picoCTF/2021/turboflan/d8 filter=lfs diff=lfs merge=lfs -text
